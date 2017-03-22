@@ -6,17 +6,18 @@ const desired = 'master'
 
 module.exports = (function () {
   const basedir = pkgDir.sync()
-  const gitHead = path.join(basedir, '.git', 'HEAD')
+  const gitHead = path.join(basedir, '.git', 'FETCH_HEAD')
   const data = fs.readFileSync(gitHead, 'utf8')
-  const re = /ref: refs\/heads\/([^\n]+)/
-  const match = re.exec(data)
-  const actual = match ? match[1] : null
+  const actual = data.match(/.*branch '([^']*)'.*/)[1]
+  // const re = /ref: refs\/heads\/([^\n]+)/
+  // const match = re.exec(data)
+  // const actual = match ? match[1] : null
   if (!actual) {
     const debug = {
       basedir,
       gitHead,
       data,
-      match: match,
+      // match: match,
       actual
     }
     console.log(JSON.stringify(debug, null, 2))
@@ -30,5 +31,5 @@ module.exports = (function () {
     console.log(str)
     throw (new Error(`Commits to ${desired} branch are not permitted. Create a pull request.`))
   }
-  // actual === match - all is well
+  // actual === desired - all is well
 })()
