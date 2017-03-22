@@ -12,10 +12,14 @@ module.exports = (function () {
   const match = re.exec(data)
   const actual = match ? match[1] : null
   if (!actual) {
-    console.log(basedir)
-    console.log(data)
-    console.log(match)
-    console.log(actual)
+    const debug = {
+      basedir,
+      gitHead,
+      data,
+      match: match,
+      actual
+    }
+    console.log(JSON.stringify(debug, null, 2))
     throw (new Error(`${basedir} does not appear to be a git repository`))
   } else if (actual === desired) {
     const str = chalk.yellow(
