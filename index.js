@@ -1,17 +1,38 @@
-
-const gitBranch = require('git-branch')
 const chalk = require('chalk')
-const branch = 'master'
+const path = require('path')
+const fs = require('fs')
+const pkgUp = require('pkg-up')
+const desired = 'master'
 
 module.exports = (function () {
-  const actual = gitBranch.sync()
-  if (actual === branch) {
-    const str = chalk.bgCyan.black(
-      '\n  To create a new branch that is tracked (I never remember the commands):\n' +
-      '    git checkout -b feature-branch_RENAME_ME master\n' +
-      '    git push -u origin feature-branch_RENAME_ME'
-    )
-    console.log(str)
-    throw new Error('Commits to the ' + branch + ' are not permitted')
-  }
+  return pkgUp().then(fpath => {
+    const basedir = path.dirname(fpath)
+    const gitHead = path.join(basedir, '.git', 'HEAD')
+    return new Promise((resolve, reject) => {
+      fs.readFile(gitHead, 'utf8', (err, data) => {
+        if (err) {
+          reject(new Error(`${basedir} does not appear to be a git repository`))
+        }
+        if (!data || data === '') {
+          reject(new Error(`${gitHead} is an empty file. Cannot validate.`))
+        }
+        const re = /ref: refs\/heads\/([^\n]+)/
+        const match = re.exec(data)
+        const actual = match ? match[1] : null
+        if (actual && actual !== desired) {
+          resolve()
+        } else if (actual && actual === desired) {
+          const str = chalk.yellow(
+            ` MEMORY AID: to create a new branch:\n` +
+            ` git checkout -b feature-branch-RENAME_ME master\n` +
+            ` git push -u orign feature-branch-RENAME_ME\n`
+          )
+          console.log(str)
+          reject(new Error(`Commits to ${desired} branch are not permitted. Create a pull request.`))
+        } else {
+          reject(new Error(`${gitHead} is badly formed. Cannot validate.`))
+        }
+      })
+    })
+  })
 })()
