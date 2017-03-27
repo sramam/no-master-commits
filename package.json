@@ -6,12 +6,17 @@
   "author": "Shishir Ramam",
   "license": "Apache-2.0",
   "main": "index.js",
+  "bin": {
+    "no-master-commits": "./index.js"
+  },
   "respository": "sramam/no-master-commits",
   "scripts": {
-    "test": "standard && mocha"
+    "test": "standard && mocha",
+    "precommit": "node ./index.js -b master"
   },
   "dependencies": {
     "chalk": "^1.1.3",
+    "commander": "^2.9.0",
     "pkg-dir": "^1.0.0"
   },
   "devDependencies": {
