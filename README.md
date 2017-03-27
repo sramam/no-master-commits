@@ -11,16 +11,29 @@ A simple node module to prevent commits to the master branch. Include in your pr
 
 # Why?
 
-A small brick in the wall that allows automation of a git-flow/feature-branch
-git branching workflow. Both prevent commits directly to the master branch.
+Popular (git work-flows)[https://www.atlassian.com/git/tutorials/comparing-workflows] prevent rewriting history
+on the master branch and possibly others. To enforce this, no commits are allowed on such branches, only pull requests.
 
-A lazy-dog developer like me will always forget and commit locally,
-and then scramble to make things right. This is a tool to prevent making the mistake.
+This lazy-developer, consistently made commits to local master branch,
+and then suffered the consequences of having to reconcile the branches one too many times.
 
-Also as an aid to the forget-ful developer, provides the
-required help to self-correct without having to resort to google.
+This module was born. The idea is to provide a simple CLI command that can be invoked in the precommit hook.
 
-# No CI?
+# Installation
+```
+npm install no-master-commits
+```
+
+# Usage
+To prevent commits to branches ['master', 'deploy']
+```
+// package.json
+"scripts": {
+  "precommit": "no-master-commits -b master,deploy"
+}
+```
+
+### No CI?
 Turns out that CI systems checkout a branch at specific commit-shas.
 Reversing the branch information for this is a complicated process and we bailed after a few attempts.
 
