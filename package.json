@@ -1,6 +1,6 @@
 {
   "name": "no-master-commits",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A simple node module to prevent commits to the master branch. Include in your pre-commit flow and profit.",
   "keywords": [],
   "author": "Shishir Ramam",
